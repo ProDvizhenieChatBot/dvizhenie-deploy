@@ -15,3 +15,10 @@ resource "yandex_resourcemanager_folder_iam_binding" "logging-writer" {
   role      = "logging.writer"
   members   = ["serviceAccount:${yandex_iam_service_account.sa.id}"]
 }
+
+# Назначение роли storage.admin для сервисного аккаунта для s3
+resource "yandex_resourcemanager_folder_iam_member" "sa_editor" {
+  folder_id = var.folder-id
+  role      = "storage.admin"
+  member    = "serviceAccount:${yandex_iam_service_account.sa.id}"
+}

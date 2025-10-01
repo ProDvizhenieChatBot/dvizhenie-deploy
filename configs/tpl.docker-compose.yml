@@ -25,6 +25,10 @@ services:
         tag: app.nginx
     depends_on:
       - fluentbit
+      - api-service
+      - bot-service
+      - storage-service
+      - hq
 
   postgres:
     image: postgres:alpine
@@ -39,7 +43,7 @@ services:
       - ${POSTGRES_REMOTE_PORT}:${POSTGRES_LOCAL_PORT}
     volumes:
       - /etc/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - /home/${DEFAULT_USER}/data-disk/${DEVICE_NAME}:/var/lib/postgresql/data
+      # временно - /home/${DEFAULT_USER}/data-disk/${DEVICE_NAME}:/var/lib/postgresql/data
     networks:
       - service-network
     logging:
@@ -77,6 +81,8 @@ services:
     container_name: api-service
     restart: always
     environment:
+      S3_PUBLIC_URL: "https://storage.yandexcloud.net"
+      S3_ENDPOINT_URL: "https://storage.yandexcloud.net"
       FILE_STORAGE_SERVICE_URL: "http://storage-service:8000"
     env_file:
       - ${PWD}/service/db_service.env

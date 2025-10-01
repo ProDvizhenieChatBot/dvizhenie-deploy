@@ -100,9 +100,9 @@ module "service" {
   htpasswd-path  = local.htpasswd-file-path
   domain-zone-id = module.preparation.domain-zone-id
 
-  s3 = var.s3
+  bucket-name        = var.bucket-name
   telegram-bot-token = var.telegram-bot-token
-  mini-app-url = var.mini-app-url
+  mini-app-url       = var.mini-app-url
 
   depends_on = [
     null_resource.build-docker-images,

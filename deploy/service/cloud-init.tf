@@ -117,30 +117,30 @@ locals {
       path = "${local.base-dir}/service/bot_service.env",
       content = templatefile("${var.configs-path}/service/bot_service.env", {
         TELEGRAM_BOT_TOKEN = var.telegram-bot-token
-        MINI_APP_URL = var.mini-app-url
+        MINI_APP_URL       = var.mini-app-url
       })
     },
     {
       path = "${local.base-dir}/service/db_service.env",
       content = templatefile("${var.configs-path}/service/db_service.env", {
         POSTGRES_LOCAL_HOST = var.postgres-config.local-host
-        POSTGRES_DB = var.postgres-secrets.db
-        POSTGRES_USER = var.postgres-secrets.user
-        POSTGRES_PASSWORD = var.postgres-secrets.password
+        POSTGRES_DB         = var.postgres-secrets.db
+        POSTGRES_USER       = var.postgres-secrets.user
+        POSTGRES_PASSWORD   = var.postgres-secrets.password
       })
     },
     {
-      path = "${local.base-dir}/service/hq_service.env",
+      path    = "${local.base-dir}/service/hq_service.env",
       content = file("${var.configs-path}/service/hq_service.env")
     },
     {
       path = "${local.base-dir}/service/storage_service.env",
       content = templatefile("${var.configs-path}/service/storage_service.env", {
-        S3_ENDPOINT_URL = var.s3.endpoint-url
-        S3_PUBLIC_URL = var.s3.public-url
-        MINIO_ROOT_USER = var.s3.aws-access-key-id
-        MINIO_ROOT_PASSWORD = var.s3.aws-secret-access-key
-        MINIO_BUCKET_NAME = var.s3.bucket-name
+        S3_ENDPOINT_URL     = "https://storage.yandexcloud.net"
+        S3_PUBLIC_URL       = "https://storage.yandexcloud.net"
+        MINIO_ROOT_USER     = yandex_iam_service_account_static_access_key.sa-static-key.access_key
+        MINIO_ROOT_PASSWORD = yandex_iam_service_account_static_access_key.sa-static-key.secret_key
+        MINIO_BUCKET_NAME   = var.bucket-name
       })
     }
   ]
@@ -158,7 +158,8 @@ locals {
     local.nginx_configs,
     local.nginx_fluentbit,
     local.nginx_services,
-    local.docker-compose-configs
+    local.docker-compose-configs,
+    local.service-configs
   )
   base-cloud-init = {
     # User setup configuration
