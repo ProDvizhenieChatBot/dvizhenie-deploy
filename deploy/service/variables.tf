@@ -121,3 +121,28 @@ variable "htpasswd-path" {
 variable "domain-zone-id" {
   type = string
 }
+
+# backend entities
+
+variable "s3" {
+  description = "s3 bucket"
+  type = object({
+    endpoint-url = string
+    public-url = string
+    aws-access-key-id = string
+    aws-secret-access-key = string
+    bucket-name = string
+  })
+  sensitive = true
+}
+
+variable "telegram-bot-token" {
+  description = "telegram-bot-token"
+  type = string
+  sensitive = true
+}
+
+variable "mini-app-url" {
+  description = "MiniApp URL"
+  type = string
+}

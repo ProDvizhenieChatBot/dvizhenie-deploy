@@ -76,9 +76,10 @@ services:
     image: ${BACKEND_API_DOCKER_IMAGE}
     container_name: api-service
     restart: always
+    environment:
+      FILE_STORAGE_SERVICE_URL: "http://storage-service:8000"
     env_file:
-      - ${PWD}/service/api_service.env
-      - ${PWD}/service/environment.env
+      - ${PWD}/service/db_service.env
     expose:
       - 8000
     networks:
@@ -99,9 +100,11 @@ services:
     image: ${BACKEND_BOT_DOCKER_IMAGE}
     container_name: bot-service
     restart: always
+    environment:
+      API_SERVICE_URL: "http://api-service:8000"
     env_file:
+      - ${PWD}/service/db_service.env
       - ${PWD}/service/bot_service.env
-      - ${PWD}/service/environment.env
     networks:
       - service-network
     logging:
@@ -121,8 +124,8 @@ services:
     container_name: storage-service
     restart: always
     env_file:
+      - ${PWD}/service/db_service.env
       - ${PWD}/service/storage_service.env
-      - ${PWD}/service/environment.env
     expose:
       - 8000
     networks:
@@ -144,7 +147,6 @@ services:
     restart: always
     env_file:
       - ${PWD}/service/hq_service.env
-      - ${PWD}/service/environment.env
     expose:
       - 80
     networks:

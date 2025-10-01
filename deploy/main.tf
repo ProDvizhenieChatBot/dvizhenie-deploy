@@ -16,13 +16,15 @@ resource "tls_private_key" "vm-ssh-key" {
 }
 
 resource "local_file" "vm-ssh-key-priv" {
-  content  = tls_private_key.vm-ssh-key.private_key_openssh
-  filename = local.ssh-key-file-name
+  content         = tls_private_key.vm-ssh-key.private_key_openssh
+  filename        = local.ssh-key-file-name
+  file_permission = "0600"
 }
 
 resource "local_file" "vm-ssh-key-pub" {
-  content  = tls_private_key.vm-ssh-key.public_key_openssh
-  filename = "${local.ssh-key-file-name}.pub"
+  content         = tls_private_key.vm-ssh-key.public_key_openssh
+  filename        = "${local.ssh-key-file-name}.pub"
+  file_permission = "0644"
 }
 
 resource "null_resource" "htpasswd" {
@@ -97,6 +99,10 @@ module "service" {
   }
   htpasswd-path  = local.htpasswd-file-path
   domain-zone-id = module.preparation.domain-zone-id
+
+  s3 = var.s3
+  telegram-bot-token = var.telegram-bot-token
+  mini-app-url = var.mini-app-url
 
   depends_on = [
     null_resource.build-docker-images,
