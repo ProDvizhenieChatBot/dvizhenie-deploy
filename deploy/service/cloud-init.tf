@@ -38,6 +38,12 @@ locals {
       content = templatefile("${var.configs-path}/nginx/templates/backend.conf.template", {
         DOMAIN = var.dns.api
       })
+    },
+    {
+      path = "${local.base-dir}/nginx/templates/widget.conf.template",
+      content = templatefile("${var.configs-path}/nginx/templates/widget.conf.template", {
+        DOMAIN = var.dns.widget
+      })
     }
   ]
 
@@ -142,6 +148,10 @@ locals {
         MINIO_ROOT_PASSWORD = yandex_iam_service_account_static_access_key.sa-static-key.secret_key
         MINIO_BUCKET_NAME   = var.bucket-name
       })
+    },
+    {
+      path    = "${local.base-dir}/nginx/html/form_manual.html",
+      content = file("${var.configs-path}/../dependencies/backend/nginx/form_manual.html")
     }
   ]
 }

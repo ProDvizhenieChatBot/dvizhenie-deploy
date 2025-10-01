@@ -72,6 +72,11 @@ resource "null_resource" "build-docker-images" {
     command = "cd ${path.module}/../dependencies/hq && make image ${module.preparation.container-registry-id}"
   }
 
+  # Собираем докер-образ для Widget и грузим в Container Registry
+  provisioner "local-exec" {
+    command = "cd ${path.module}/../dependencies/widget && make image ${module.preparation.container-registry-id}"
+  }
+
   depends_on = [module.preparation]
 }
 
@@ -94,8 +99,9 @@ module "service" {
   postgres-secrets      = var.postgres-secrets
   container-registry-id = module.preparation.container-registry-id
   dns = {
-    hq  = "admin.${local.dns.service-domain}"
-    api = "api.${local.dns.service-domain}"
+    hq     = "admin.${local.dns.service-domain}"
+    api    = "api.${local.dns.service-domain}"
+    widget = "widget.${local.dns.service-domain}"
   }
   htpasswd-path  = local.htpasswd-file-path
   domain-zone-id = module.preparation.domain-zone-id

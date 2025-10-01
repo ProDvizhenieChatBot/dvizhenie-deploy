@@ -105,8 +105,9 @@ variable "postgres-secrets" {
 variable "dns" {
   description = "Адреса сервисов"
   type = object({
-    hq  = string
-    api = string
+    hq     = string
+    api    = string
+    widget = string
   })
 }
 

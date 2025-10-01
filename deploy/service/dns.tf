@@ -14,3 +14,11 @@ resource "yandex_dns_recordset" "record-web" {
   ttl     = 600
   data    = [module.app.external-ip]
 }
+
+resource "yandex_dns_recordset" "record-widget" {
+  zone_id = var.domain-zone-id
+  name    = "${var.dns.widget}."
+  type    = "A"
+  ttl     = 600
+  data    = [module.app.external-ip]
+}

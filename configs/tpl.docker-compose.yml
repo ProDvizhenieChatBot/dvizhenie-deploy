@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:alpine
+    image: ${NGINX_ALPINE_DOCKER_IMAGE}
     container_name: service-nginx
     restart: always
     ports:
@@ -12,6 +12,7 @@ services:
       - ${PWD}/nginx/.htpasswd:/etc/nginx/.htpasswd:ro
       - ${PWD}/certs:/etc/ssl:ro
       - ${PWD}/nginx/templates:/etc/nginx/templates:ro
+      - ${PWD}/nginx/html/form_manual.html:/usr/share/nginx/html/form_manual.html:ro
       # - nginx-logs:/var/log/nginx
     networks:
       - service-network
@@ -31,7 +32,7 @@ services:
       - hq
 
   postgres:
-    image: postgres:alpine
+    image: ${POSTGRES_ALPINE_DOCKER_IMAGE}
     container_name: ${POSTGRES_LOCAL_HOST}
     restart: always
     environment:
@@ -167,8 +168,27 @@ services:
         tag: app.hq-service
     depends_on:
       - fluentbit
-      - bot-service
+      - api-service
       - storage-service
+
+  widget:
+    image: ${WIDGET_FRONTEND_DOCKER_IMAGE}
+    container_name: widget-service
+    restart: always
+    expose:
+      - 80
+    networks:
+      - service-network
+    logging:
+      # Fluent Bit понимает логи в этом формате.
+      driver: fluentd
+      options:
+        # Fluent Bit слушает логи на порту ${FLUENT_BIT_PORT}.
+        fluentd-address: localhost:${FLUENT_BIT_PORT}
+        # Теги используются для маршрутизации логов.
+        tag: app.widget-service
+    depends_on:
+      - fluentbit
 
 
 networks:

@@ -20,5 +20,8 @@ locals {
     BACKEND_BOT_DOCKER_IMAGE     = "cr.yandex/${var.container-registry-id}/backend-bot:0.1"
     BACKEND_STORAGE_DOCKER_IMAGE = "cr.yandex/${var.container-registry-id}/backend-storage:0.1"
     HQ_FRONTEND_DOCKER_IMAGE     = "cr.yandex/${var.container-registry-id}/hq:0.1"
+    WIDGET_FRONTEND_DOCKER_IMAGE = "cr.yandex/${var.container-registry-id}/widget:0.1"
+    NGINX_ALPINE_DOCKER_IMAGE    = "cr.yandex/${var.container-registry-id}/nginx:alpine"
+    POSTGRES_ALPINE_DOCKER_IMAGE = "cr.yandex/${var.container-registry-id}/postgres:alpine"
   })
 }
