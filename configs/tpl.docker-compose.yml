@@ -1,0 +1,174 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: service-nginx
+    restart: always
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - ${PWD}/nginx/http.conf:/etc/nginx/conf.d/http.conf:ro
+      - ${PWD}/nginx/ssl:/etc/nginx/ssl:ro
+      - ${PWD}/nginx/.htpasswd:/etc/nginx/.htpasswd:ro
+      - ${PWD}/certs:/etc/ssl:ro
+      - ${PWD}/nginx/templates:/etc/nginx/templates:ro
+      # - nginx-logs:/var/log/nginx
+    networks:
+      - service-network
+    logging:
+      # Fluent Bit понимает логи в этом формате.
+      driver: fluentd
+      options:
+        # Fluent Bit слушает логи на порту ${FLUENT_BIT_PORT}.
+        fluentd-address: localhost:${FLUENT_BIT_PORT}
+        # Теги используются для маршрутизации логов.
+        tag: app.nginx
+    depends_on:
+      - fluentbit
+
+  postgres:
+    image: postgres:alpine
+    container_name: ${POSTGRES_LOCAL_HOST}
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGPASSWORD: ${POSTGRES_PASSWORD}  # Для psql и pg_isready
+    ports:
+      - ${POSTGRES_REMOTE_PORT}:${POSTGRES_LOCAL_PORT}
+    volumes:
+      - /etc/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - /home/${DEFAULT_USER}/data-disk/${DEVICE_NAME}:/var/lib/postgresql/data
+    networks:
+      - service-network
+    logging:
+      # Fluent Bit понимает логи в этом формате.
+      driver: fluentd
+      options:
+        # Fluent Bit слушает логи на порту ${FLUENT_BIT_PORT}.
+        fluentd-address: localhost:${FLUENT_BIT_PORT}
+        # Теги используются для маршрутизации логов.
+        tag: app.postgres
+    depends_on:
+      - fluentbit
+
+  fluentbit:
+    # https://yandex.cloud/ru/docs/logging/tutorials/coi-fluent-bit-logging
+    container_name: ${FLUENT_BIT_HOST}
+    image: cr.yandex/yc/fluent-bit-plugin-yandex:v1.0.3-fluent-bit-1.8.6
+    # expose:
+    #   - ${FLUENT_BIT_PORT}
+    #   - ${FLUENT_BIT_PORT}/udp
+    ports:
+      - ${FLUENT_BIT_PORT}:${FLUENT_BIT_PORT}
+      - ${FLUENT_BIT_PORT}:${FLUENT_BIT_PORT}/udp
+    restart: always
+    networks:
+      - service-network
+    environment:
+      YC_GROUP_ID: ${YC_GROUP_ID}
+    volumes:
+      - ${PWD}/fluentbit/fluentbit.conf:/fluent-bit/etc/fluent-bit.conf
+      # - ${PWD}/fluentbit/parsers.conf:/fluent-bit/etc/parsers.conf
+
+  api-service:
+    image: ${BACKEND_API_DOCKER_IMAGE}
+    container_name: api-service
+    restart: always
+    env_file:
+      - ${PWD}/service/api_service.env
+      - ${PWD}/service/environment.env
+    expose:
+      - 8000
+    networks:
+      - service-network
+    logging:
+      # Fluent Bit понимает логи в этом формате.
+      driver: fluentd
+      options:
+        # Fluent Bit слушает логи на порту ${FLUENT_BIT_PORT}.
+        fluentd-address: localhost:${FLUENT_BIT_PORT}
+        # Теги используются для маршрутизации логов.
+        tag: app.api-service
+    depends_on:
+      - fluentbit
+      - postgres
+
+  bot-service:
+    image: ${BACKEND_BOT_DOCKER_IMAGE}
+    container_name: bot-service
+    restart: always
+    env_file:
+      - ${PWD}/service/bot_service.env
+      - ${PWD}/service/environment.env
+    networks:
+      - service-network
+    logging:
+      # Fluent Bit понимает логи в этом формате.
+      driver: fluentd
+      options:
+        # Fluent Bit слушает логи на порту ${FLUENT_BIT_PORT}.
+        fluentd-address: localhost:${FLUENT_BIT_PORT}
+        # Теги используются для маршрутизации логов.
+        tag: app.bot-service
+    depends_on:
+      - fluentbit
+      - postgres
+
+  storage-service:
+    image: ${BACKEND_STORAGE_DOCKER_IMAGE}
+    container_name: storage-service
+    restart: always
+    env_file:
+      - ${PWD}/service/storage_service.env
+      - ${PWD}/service/environment.env
+    expose:
+      - 8000
+    networks:
+      - service-network
+    logging:
+      # Fluent Bit понимает логи в этом формате.
+      driver: fluentd
+      options:
+        # Fluent Bit слушает логи на порту ${FLUENT_BIT_PORT}.
+        fluentd-address: localhost:${FLUENT_BIT_PORT}
+        # Теги используются для маршрутизации логов.
+        tag: app.storage-service
+    depends_on:
+      - fluentbit
+
+  hq:
+    image: ${HQ_FRONTEND_DOCKER_IMAGE}
+    container_name: hq-service
+    restart: always
+    env_file:
+      - ${PWD}/service/hq_service.env
+      - ${PWD}/service/environment.env
+    expose:
+      - 80
+    networks:
+      - service-network
+    logging:
+      # Fluent Bit понимает логи в этом формате.
+      driver: fluentd
+      options:
+        # Fluent Bit слушает логи на порту ${FLUENT_BIT_PORT}.
+        fluentd-address: localhost:${FLUENT_BIT_PORT}
+        # Теги используются для маршрутизации логов.
+        tag: app.hq-service
+    depends_on:
+      - fluentbit
+      - bot-service
+      - storage-service
+
+
+networks:
+  service-network:
+    name: service-network  # Задаем конкретное имя сети, чтобы его могли использовать в других docker compose конфигурациях
+
+# Диск для Postgres
+x-yc-disks:
+  - device_name: ${DEVICE_NAME}
+    fs_type: ext4
+    host_path: /home/${DEFAULT_USER}/data-disk

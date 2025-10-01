@@ -1,3 +1,6 @@
+.htpasswd
+ycvm
+ycvm.pub
 # Local .terraform directories
 .terraform/
 

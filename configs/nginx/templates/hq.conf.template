@@ -1,0 +1,27 @@
+server {
+    listen          80;
+    server_name     ${DOMAIN};
+    # return          301     https://$host:$server_port$request_uri;
+    return          301     https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name     ${DOMAIN};
+
+    include /etc/nginx/ssl/params.conf;
+    include /etc/nginx/ssl/certificates.conf;
+
+    # Логи
+    error_log /var/log/nginx/hq_error.log;
+    access_log /var/log/nginx/hq_access.log;
+
+    location / {
+        proxy_pass http://hq-service;
+
+        # proxy_set_header Host $host:$server_port;
+        # proxy_set_header X-Forwarded-Proto $scheme;
+        # proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}

@@ -1,0 +1,18 @@
+# Отклоняем неизвестные хосты
+
+server {
+    listen 80 default_server;
+    server_name _;
+    return 404;
+}
+
+server {
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
+    server_name _;
+
+    include /etc/nginx/ssl/params.conf;
+    include /etc/nginx/ssl/certificates.conf;
+
+    return 404;
+}
