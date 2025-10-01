@@ -1,0 +1,9 @@
+[submodule "backend"]
+	path = dependencies/backend
+	url = git@github.com:ProDvizhenieChatBot/dvizhenie-microservices-backend.git
+[submodule "widget"]
+	path = dependencies/widget
+	url = git@github.com:ProDvizhenieChatBot/dvizhenie-chat-widget.git
+[submodule "hq"]
+	path = dependencies/hq
+	url = git@github.com:ProDvizhenieChatBot/dvizhenie-life-frontend.git

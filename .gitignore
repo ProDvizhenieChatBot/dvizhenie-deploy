@@ -1,5 +1,9 @@
+.htpasswd
+ycvm
+ycvm.pub
 # Local .terraform directories
 .terraform/
+.DS_Store
 
 # .tfstate files
 *.tfstate
