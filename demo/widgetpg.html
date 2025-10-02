@@ -24,25 +24,30 @@
             console.log('Загружен файл:', file.name)
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const { ChatWidget } = DvizhenieChat
-            // Создаём элемент с props
-            const element = React.createElement(ChatWidget, {
-                position: "bottom-right",
-                primaryColor: "#4F46E5",
-                title: "Фонд «Движение»",
-                subtitle: "Мы здесь, чтобы помочь",
-                onMessageSend: handleMessageSend,
-                onFileUpload: handleFileUpload
-            });
-            const root = ReactDOM.createRoot(document.getElementById('root'));
-            root.render(element);
+        window.DvizhenieWidget.init({
+            containerId: 'chat-widget',
+            saluteSpeechToken: 'MjFjNjQxZTAtOGMxZC00NmIyLTkxMjAtM2FkNTlkMzA2Nzk2OjU4MmI2YmU2LTA2MzAtNDA4Yi1iN2U5LTIyN2NlN2ZlMDViZg==e',
         })
+
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const { ChatWidget } = DvizhenieChat
+        //     // Создаём элемент с props
+        //     const element = React.createElement(ChatWidget, {
+        //         position: "bottom-right",
+        //         primaryColor: "#4F46E5",
+        //         title: "Фонд «Движение»",
+        //         subtitle: "Мы здесь, чтобы помочь",
+        //         onMessageSend: handleMessageSend,
+        //         onFileUpload: handleFileUpload
+        //     });
+        //     const root = ReactDOM.createRoot(document.getElementById('root'));
+        //     root.render(element);
+        // })
         
     </script>
    <div>
      https://widget.dvizhenie.ikemurami.com/dvizhenie-chat-widget.iife.js
    </div>
-   <div id="root"></div>
+   <div id="chat-widget"></div>
 </body>
 </html>
