@@ -17,6 +17,12 @@ server {
     error_log /var/log/nginx/hq_error.log;
     access_log /var/log/nginx/hq_access.log;
 
+    location = /tg-mini-app {
+        alias /usr/share/nginx/html/tg-mini-app.html;
+        default_type text/html;
+        charset utf-8;
+    }
+
     location / {
         proxy_pass http://widget-service;
 

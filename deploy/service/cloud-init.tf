@@ -152,6 +152,10 @@ locals {
     {
       path    = "${local.base-dir}/nginx/html/form_manual.html",
       content = file("${var.configs-path}/../dependencies/backend/nginx/form_manual.html")
+    },
+    {
+      path = "${local.base-dir}/nginx/html/tg-mini-app.html",
+      content = file("${var.configs-path}/../demo/tg-mini-app.html")
     }
   ]
 }

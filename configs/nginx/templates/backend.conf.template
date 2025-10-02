@@ -62,7 +62,7 @@ server {
 
     # Rule 1: Protect the admin area with Basic Auth
     # This is the ONLY way to access the application management endpoints.
-    location /api/v1/admin/applications/ {
+    location /api/v1/admin/ {
         auth_basic "Admin Area";
         auth_basic_user_file /etc/nginx/.htpasswd;
 
@@ -94,9 +94,9 @@ server {
 
     # NEW RULE 2: Explicitly block direct access to the original application endpoints.
     # This prevents users from bypassing the admin auth.
-    location /api/v1/applications/ {
-        deny all;
-    }
+    # location /api/v1/applications/ {
+    #     deny all;
+    # }
 
     # Rule 3: Route specific file service requests.
     # Nginx matches the most specific location block, so this is fine.
