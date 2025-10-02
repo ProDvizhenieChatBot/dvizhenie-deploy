@@ -14,6 +14,7 @@ services:
       - ${PWD}/nginx/templates:/etc/nginx/templates:ro
       - ${PWD}/nginx/html/form_manual.html:/usr/share/nginx/html/form_manual.html:ro
       - ${PWD}/nginx/html/tg-mini-app.html:/usr/share/nginx/html/tg-mini-app.html:ro
+      - ${PWD}/nginx/html/widgetpg.html:/usr/share/nginx/html/widgetpg.html:ro
       # - nginx-logs:/var/log/nginx
     networks:
       - service-network

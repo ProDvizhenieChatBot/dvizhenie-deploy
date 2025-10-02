@@ -4,50 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+<!-- 2. CSS виджета -->
+<link rel="stylesheet" href="https://widget.dvizhenie.ikemurami.com/chat-widget.css">
+
+
+
 </head>
 <body>
-    <script>
-        window.process = { env: { NODE_ENV: 'production' } };
-    </script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
-    <script src="https://widget.dvizhenie.ikemurami.com/dvizhenie-chat-widget.umd.js"></script>
-    <script>
-    // Widget functionality will be available via window.DvizhenieChat
-    // Implementation details coming soon
-        const handleMessageSend = (message) => {
-            console.log('Отправлено сообщение:', message)
-        }
-
-        const handleFileUpload = (file) => {
-            console.log('Загружен файл:', file.name)
-        }
-
-        window.DvizhenieWidget.init({
-            containerId: 'chat-widget',
-            saluteSpeechToken: 'MjFjNjQxZTAtOGMxZC00NmIyLTkxMjAtM2FkNTlkMzA2Nzk2OjU4MmI2YmU2LTA2MzAtNDA4Yi1iN2U5LTIyN2NlN2ZlMDViZg==e',
-        })
-
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const { ChatWidget } = DvizhenieChat
-        //     // Создаём элемент с props
-        //     const element = React.createElement(ChatWidget, {
-        //         position: "bottom-right",
-        //         primaryColor: "#4F46E5",
-        //         title: "Фонд «Движение»",
-        //         subtitle: "Мы здесь, чтобы помочь",
-        //         onMessageSend: handleMessageSend,
-        //         onFileUpload: handleFileUpload
-        //     });
-        //     const root = ReactDOM.createRoot(document.getElementById('root'));
-        //     root.render(element);
-        // })
-        
-    </script>
-   <div>
-     https://widget.dvizhenie.ikemurami.com/dvizhenie-chat-widget.iife.js
-   </div>
-   <div id="chat-widget"></div>
+    <!-- 1. React (ОБЯЗАТЕЛЬНО!) -->
+<script defer src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script defer src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<!-- 3. JavaScript виджета -->
+<script defer src="https://widget.dvizhenie.ikemurami.com/dvizhenie-chat-widget-init.iife.js"></script>
+<script defer>
+// 4. Инициализация
+window.DvizhenieWidget.init({
+    saluteSpeechToken: 'your_base64_token_here' // опционально
+});
+</script>
 </body>
 </html>
